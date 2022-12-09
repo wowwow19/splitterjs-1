@@ -1,101 +1,90 @@
 class Splitter {
     
-    constructor(config) {
-        this.type = config.type || "vertical";
-        this.min = config.min || { unit: ["%", "%"], size: [20, 20] };
-        this.cookie = config.cookie || false;
+    TYPE_VERTICAL = 'vertical';
+    TYPE_HORIZONTAL = 'horizontal';
 
-        this.#firstPanel = document.getElementById('firstPanel');
-        this.#secondPanel = document.getElementById('secondPanel');
+    constructor(config) {
+        this.id = this._createUniqueId();
+        this.type = config.type;
+        
+        // Inner Object
+        this.container = null;
+        this.panel1 = document.getElementById('panel1');
+        this.panel2 = document.getElementById('panel2');
+        this.dragBarContainer = null;
+
+        this.init();
     }
 
-    get type() { return this._type; }
+    // Parsing config.type
     set type(value) {
-        if (typeof value !== 'string' || (value !== 'vertical' && value !== 'horizontal')) {
+        if (typeof value !== 'string' || (value !== this.TYPE_HORIZONTAL && value !== this.TYPE_VERTICAL)) {
             throw new Error('Invalid Splitter Type.\nPlease set it in \'vertical\' or \'horizontal\'.');
         } else {
-            this._type = value; 
-        }
-    }
-    get min() { return this._minSize; }
-    set min(value) {
-        let unit = value.unit;
-        if (unit) {
-            if (Array.isArray(unit)) {
-                for (let u of unit) {
-                    if (u !== 'px' && u !== '%' && u !== 'vw' && u !== 'vh') {
-                        throw new Error('Invalid Splitter Minimum Size Unit.\nPlease set it in \'px\', \'%\', \'vw\' or \'vh\'');
-                    }
-                }
+            if (value === this.TYPE_VERTICAL) {
+                this._type = 'v';
             } else {
-                if (unit !== 'px' && unit !== '%' && unit !== 'vw' && unit !== 'vh') {
-                    throw new Error('Invalid Splitter Minimum Size Unit.\nPlease set it in \'px\' or \'%\', \'vw\' or \'vh\'');
-                }
+                this._type = 'h';
             }
         }
+    }
 
-        let size = value.size;
-        if (size) {
-            if (Array.isArray(size)) {
-                for (let s of size) {
-                    if (typeof s !== 'number') {
-                        throw new Error('Invalid Splitter Minimum Size.\nPlease set it in number type');
-                    }
-                }
-            } else {
-                if (typeof size !== 'number') {
-                    throw new Error('Invalid Splitter Minimum Size.\nPlease set it in number type');
-                }
-            }
-        }
-
-        this._min = value;
-    }
-    get cookie() { return this._cookie; }
-    set cookie(value) {
-        if (typeof value !== 'boolean') {
-            throw new Error('Invalid Splitter Cookie Value.\nPlease set it in true or false.');
+    // Set panel object
+    set panel1(value) {
+        if (value == null) {
+            throw new Error('error');
         } else {
-            this._cookie = value;
+            this._panel1 = value;
         }
     }
-    get #firstPanel() { return this._firstPanel; }
-    set #firstPanel(value) {
-        if (!value) {
-            throw new Error('Object with id=\'firstPanel\' does not exist.');
+    set panel2(value) {
+        if (value == null) {
+            throw new Error('error');
         } else {
-            this._firstPanel = value;
+            this._panel2 = value;
         }
     }
-    get #secondPanel() { return this._secondPanel; }
-    set #secondPanel(value) {
-        if (!value) {
-            throw new Error('Object with id=\'secondPanel\' does not exist.');
-        } else {
-            this._secondPanel = value;
-        }
+    set container(value) {
+        this._container = value;
+    }
+    set dragBarContainer(value) {
+        this._dragBarContainer = value;
     }
 
     init() {
-        this.#createContainer();
+        this._setLayout();
+        this._createDragBar();
     }
 
-    #createContainer() {
-        if (this.#firstPanel.parentNode !== this.#secondPanel.parentNode) {
-            throw new Error('The first panel and the second panel must be at the same depth.');
-        }
+    _setLayout() {
+        const wrapper = this._panel1.parentNode;
+        this.container = document.createElement('div');
+        this.dragBarContainer = document.createElement('div');
+
+        // Append objects to wrapper and container
+        wrapper.appendChild(this._container);
+        this._container.appendChild(this._panel1);
+        this._container.appendChild(this._dragBarContainer);
+        this._container.appendChild(this._panel2);
+
+        // Set a unique id for object
+        this._container.id = this._createUniqueId();
+        this._dragBarContainer.id = this._createUniqueId();
         
-        const wrapper = this.#firstPanel.parentNode;
-        const container = document.createElement('div');
-        
-        wrapper.appendChild(container);
-        container.appendChild(this.#firstPanel);
-        container.appendChild(this.#secondPanel);
-        container.id = 'panelContainer';
-        container.classList.add(this.type);
+        // Set style of object
+        this._container.classList.add('bvs-ctn', 'bvs-ctn-' + this._type);
+        this._dragBarContainer.classList.add('bvs-drb-ctn');
+
+    }
+
+    _createDragBar() {
+    }
+
+    _createUniqueId() {
+        return Number(Math.random()).toString(32).substring(2);
     }
     
     on() {
-
+        
     }
 }
