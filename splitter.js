@@ -1,5 +1,12 @@
 class Splitter {
     
+    // Private Objects
+    #container;
+    #panel1;
+    #panel2;
+    #dragBarContainer;
+    
+    // Public Constants
     TYPE_VERTICAL = 'vertical';
     TYPE_HORIZONTAL = 'horizontal';
 
@@ -7,11 +14,6 @@ class Splitter {
         this.id = this._createUniqueId();
         this.type = config.type;
         
-        // Inner Object
-        this.container = null;
-        this.panel1 = document.getElementById('panel1');
-        this.panel2 = document.getElementById('panel2');
-        this.dragBarContainer = null;
 
         this.init();
     }
@@ -34,57 +36,53 @@ class Splitter {
         if (value == null) {
             throw new Error('error');
         } else {
-            this._panel1 = value;
+            this.#panel1 = value;
         }
     }
     set panel2(value) {
         if (value == null) {
             throw new Error('error');
         } else {
-            this._panel2 = value;
+            this.#panel2 = value;
         }
     }
-    set container(value) {
-        this._container = value;
-    }
-    set dragBarContainer(value) {
-        this._dragBarContainer = value;
-    }
 
-    init() {
+    init = () => {
         this._setLayout();
         this._createDragBar();
     }
 
-    _setLayout() {
-        const wrapper = this._panel1.parentNode;
-        this.container = document.createElement('div');
-        this.dragBarContainer = document.createElement('div');
+    _setLayout = () => {
+        // Get and create private objects
+        this.#container = document.createElement('div');
+        this.#dragBarContainer = document.createElement('div');
+        this.panel1 = document.getElementById('panel1');
+        this.panel2 = document.getElementById('panel2');
+        const wrapper = this.#panel1.parentNode;
 
         // Append objects to wrapper and container
-        wrapper.appendChild(this._container);
-        this._container.appendChild(this._panel1);
-        this._container.appendChild(this._dragBarContainer);
-        this._container.appendChild(this._panel2);
+        wrapper.appendChild(this.#container);
+        this.#container.appendChild(this.#panel1);
+        this.#container.appendChild(this.#dragBarContainer);
+        this.#container.appendChild(this.#panel2);
 
         // Set a unique id for object
-        this._container.id = this._createUniqueId();
-        this._dragBarContainer.id = this._createUniqueId();
+        this.#container.id = this._createUniqueId();
+        this.#dragBarContainer.id = this._createUniqueId();
         
         // Set style of object
-        this._container.classList.add('bvs-ctn', 'bvs-ctn-' + this._type);
-        this._dragBarContainer.classList.add('bvs-drb-ctn');
-
+        this.#container.classList.add('bvs-ctn', 'bvs-ctn-' + this._type);
+        this.#dragBarContainer.classList.add('bvs-drb-ctn');
     }
 
-    _createDragBar() {
+    _createDragBar = () => {
     }
 
-    _createUniqueId() {
+    _createUniqueId = () => {
         return Number(Math.random()).toString(32).substring(2);
     }
     
-    on() {
+    on = () => {
         
     }
 }
