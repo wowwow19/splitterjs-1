@@ -10,17 +10,24 @@
 </head>
 <body>
     <div id="wrapper">
-        <div id="panel1">1</div>
+        <div id="panel1">1234234235235263263</div>
         <div id="panel2">2</div>
     </div>
     <script>
         const splitter = new Splitter({
             type: 'vertical',
-            cookie: true,
-            min: {
-                unit: ['px', 'vh'],
-                size: [20, 30]
-            }
+            panels: [
+                {
+                    id: "",
+                    unit: "px",
+                    size: ""
+                },
+                {
+                    id: "",
+                    unit: "%",
+                    size: ""
+                }
+            ]
         });
     </script>
 </body>
